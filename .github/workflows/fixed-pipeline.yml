@@ -1,0 +1,35 @@
+name: Fixed CI Pipeline
+on:
+  push:
+    branches: [ main ]
+jobs:
+  test:
+    [cite_start]runs-on: ubuntu-latest  # FIXED: Correct runner name [cite: 415]
+    steps:
+      - [cite_start]uses: actions/checkout@v4 # FIXED: Proper step structure [cite: 415]
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run Tests
+        run: pytest tests/ -v
+
+  build:
+    [cite_start]runs-on: ubuntu-latest # FIXED: Added missing runs-on [cite: 415]
+    needs: test
+    [cite_start]steps:                  # FIXED: Added missing steps keyword [cite: 415]
+      - uses: actions/checkout@v4
+      - name: Build Image
+        run: docker build -t myapp . # FIXED: Added -t and context period [cite: 415]
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build            # FIXED: Changed dependency to follow logical flow
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy
+        run: echo "Deploying to production..."
