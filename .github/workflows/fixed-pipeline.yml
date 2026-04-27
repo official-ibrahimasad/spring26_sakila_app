@@ -1,12 +1,12 @@
 name: Fixed CI Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/ci-pipeline ] # Added your feature branch so it triggers now!
 jobs:
   test:
-    [cite_start]runs-on: ubuntu-latest  # FIXED: Correct runner name [cite: 415]
+    runs-on: ubuntu-latest
     steps:
-      - [cite_start]uses: actions/checkout@v4 # FIXED: Proper step structure [cite: 415]
+      - uses: actions/checkout@v4
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -19,16 +19,16 @@ jobs:
         run: pytest tests/ -v
 
   build:
-    [cite_start]runs-on: ubuntu-latest # FIXED: Added missing runs-on [cite: 415]
+    runs-on: ubuntu-latest
     needs: test
-    [cite_start]steps:                  # FIXED: Added missing steps keyword [cite: 415]
+    steps:
       - uses: actions/checkout@v4
       - name: Build Image
-        run: docker build -t myapp . # FIXED: Added -t and context period [cite: 415]
+        run: docker build -t myapp .
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build            # FIXED: Changed dependency to follow logical flow
+    needs: build
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy
